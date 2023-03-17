@@ -41,7 +41,7 @@ int main(void){
     //generate the fisrt block
     newBlock();
     
-    //进入游戏循环
+    //getting into the game loop
     while(window.isOpen()){
         //waiting for players to press a key, and then dealing with it
         keyEvent();
