@@ -56,18 +56,31 @@ void newBlock(){
     }
 }
 
-void drawBlock(Sprite *spriteTiles){
+void drawBlock(Sprite *spriteTiles, RenderWindow *window){
     //  1. 已经降落到底部的俄罗斯方块
     for(int i = 0; i < ROW_COUNT; i++){
         for(int j = 0; j < COL_COUNT; j++){
             if(table[i][j] != 0){//如果table有方块，则把他画出来
                 //画方块，需要使用sprite来表示完整的方块图片
-                spriteTiles->setTextureRect(IntRect());   //set the sub-rec of the texture
+                spriteTiles->setTextureRect(IntRect(table[i][j] * 18, 0, 18, 18));   //set the sub-rec of the texture with the (x, y, width, height)
+                spriteTiles->setPosition(j * 18, i * 18);   //j is column, so j is x; i is row, so i is y
+                //设置偏移量
+                spriteTiles->move(27, 30);
+                //draw it out
+                window->draw(*spriteTiles);
             }
         }
     }
     
-    //  2. 正在降落中的俄罗斯方块（当前方块）
+    //  2. 正在降落中的俄罗斯方块（当前方块）只需要画当前的4个blocks
+    for(int i = 0; i < 4; i++){ //blockIndex记录了当前方块的种类
+        spriteTiles->setTextureRect(IntRect(blockIndex * 18, 0, 18, 18));
+        spriteTiles->setPosition(curBlock[i].x * 18, curBlock[i].y * 18);
+        //设置偏移量
+        spriteTiles->move(27, 30);
+        //draw it out
+        window->draw(*spriteTiles);
+    }
 }
 
 int main(void){
@@ -102,7 +115,7 @@ int main(void){
         //绘制游戏
         
         //绘制方块
-        drawBlock(&spriteTiles);
+        drawBlock(&spriteTiles, &window);
     }
     
     cin.get();
