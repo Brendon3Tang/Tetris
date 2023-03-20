@@ -7,6 +7,11 @@
 
 ## main()
 
+## doRotate()
+![rotate_formula](DevelopLog/rotate_formula.png)
+
+## keyEvent()
+
 ## newBlock()
 ### - newBlock()把定义好的blocks里的方块根据需要的种类赋予坐标，使他们成为可以放入游戏table的newBlock。
 

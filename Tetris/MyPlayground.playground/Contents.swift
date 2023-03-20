@@ -14,7 +14,7 @@ var greeting = "Hello, playground"
  ## 3. newBlock()函数
 
  ## 4. DrawBlock()函数
- ![drawblock](Resources/drawblock.png)
+ ![drawblock](DevelopLog/drawblock.png)
  - 偏移量：实际的(0, 0)是背景图的左上方，而非背景图中的游戏区域，所以需要设置偏移量。
  1. 已经降落到底部的俄罗斯方块
      - 两层For loop，如果table[i][j] != 0， 那么根据它的值为他绘制对应的格子：
