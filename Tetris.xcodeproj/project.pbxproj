@@ -7,15 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		06924CBE29C8112E009F78EC /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 06924CBD29C8112E009F78EC /* main.cpp */; };
 		06AC763F29C464680044CC17 /* images in Resources */ = {isa = PBXBuildFile; fileRef = 06AC763E29C464680044CC17 /* images */; };
-		06AC764329C467160044CC17 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 06AC764229C467160044CC17 /* main.cpp */; };
 		06BB1B9329C5B02A00A93FCB /* DevelopLog in Resources */ = {isa = PBXBuildFile; fileRef = 06BB1B9229C5B02A00A93FCB /* DevelopLog */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		06924CBD29C8112E009F78EC /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = main.cpp; path = Tetris/main.cpp; sourceTree = "<group>"; };
 		06AC762129C45CF80044CC17 /* Tetris.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Tetris.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		06AC763E29C464680044CC17 /* images */ = {isa = PBXFileReference; lastKnownFileType = folder; path = images; sourceTree = "<group>"; };
-		06AC764229C467160044CC17 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		06BB1B8D29C5A72A00A93FCB /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		06BB1B9229C5B02A00A93FCB /* DevelopLog */ = {isa = PBXFileReference; lastKnownFileType = folder; path = DevelopLog; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -34,6 +34,7 @@
 		06AC761729C45CF80044CC17 = {
 			isa = PBXGroup;
 			children = (
+				06924CBD29C8112E009F78EC /* main.cpp */,
 				06AC762329C45CF80044CC17 /* Tetris */,
 				06AC762229C45CF80044CC17 /* Products */,
 			);
@@ -51,7 +52,6 @@
 			isa = PBXGroup;
 			children = (
 				06BB1B9229C5B02A00A93FCB /* DevelopLog */,
-				06AC764229C467160044CC17 /* main.cpp */,
 				06AC763E29C464680044CC17 /* images */,
 				06BB1B8D29C5A72A00A93FCB /* README.md */,
 			);
@@ -149,7 +149,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				06AC764329C467160044CC17 /* main.cpp in Sources */,
+				06924CBE29C8112E009F78EC /* main.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

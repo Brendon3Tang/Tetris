@@ -15,7 +15,7 @@ using namespace std;
 using namespace sf;
 
 //block包含所有七种block类型，每当要创建新block时，便会从中取相对应的block用以转换成curBlock
-int block[7][4] = {
+int blocks[7][4] = {
     {1, 3, 5, 7},   //1字形
     {2, 4, 5, 7},   //Z 1型
     {3, 5, 4, 6},   //Z 2型
@@ -34,10 +34,76 @@ int blockIndex; //表示当前方块的种类
 
 struct{
     int x, y;
-}curBlock[4];
+}curBlock[4], lastBlock[4];
 
-void keyEvent(){
-     
+// 定义下降速度
+const float SPEED_NORMAL = 0.5;
+const float SPEED_QUICK = 0.05;
+float delay = SPEED_NORMAL;  //实际选用的速度
+
+bool check(){
+    for(int i = 0; i < 4; i++){
+        if(curBlock[i].x < 0
+           || curBlock[i].x >= COL_COUNT
+           || curBlock[i]. y >= ROW_COUNT
+           || table[curBlock[i].y][curBlock[i].x] != 0 )
+            return false;
+    }
+    return true;
+}
+
+void moveLeftRight(int offset){
+    for(int i = 0; i < 4; i++){
+        lastBlock[i] = curBlock[i];
+        //cout << "offset is: " << offset << endl;
+        curBlock[i].x += offset;
+    }
+    
+    if(!check()){
+        for(int i = 0; i < 4; i++)
+            curBlock[i] = lastBlock[i];
+    }
+    
+}
+
+void doRotate(){
+    
+}
+
+void keyEvent(RenderWindow *window){
+    bool rotate = false;    //是否旋转
+    int offset = 0;
+    Event e;    //事件变量
+    
+    //  pollEvent从事件队列中取出一个事件
+    //如果没有事件了，就返回false
+    while(window->pollEvent(e)){
+        if(e.type == sf::Event::Closed)
+            window->close();
+        if(e.type == Event::KeyPressed){
+            switch (e.key.code) {
+                case Keyboard::Up:
+                    rotate = true;
+                    break;
+                case Keyboard::Left:
+                    offset = -1;
+                    break;
+                case Keyboard::Right:
+                    offset = 1;
+                    break;
+                case Keyboard::Down:
+                    delay = SPEED_QUICK;
+                    break;
+                default:
+                    break;
+          }
+        }
+        //处理移动
+        if(offset !=0 ) moveLeftRight(offset);
+        //处理旋转
+        if(rotate)  doRotate();
+    }
+    
 }
 
 // newBlock（）会把block的序号转化成坐标轴中的坐标，然后赋予curBlock，形成一个新的block
@@ -51,8 +117,8 @@ void newBlock(){
      *  序号 / 2 = y坐标
      **/
     for(int i = 0; i < 4; i++){
-        curBlock[i].x = block[n][i] % 2;
-        curBlock[i].y = block[n][i] / 2;
+        curBlock[i].x = blocks[n][i] % 2;
+        curBlock[i].y = blocks[n][i] / 2;
     }
 }
 
@@ -83,6 +149,23 @@ void drawBlock(Sprite *spriteTiles, RenderWindow *window){
     }
 }
 
+// drop()会使当前方块下降一个位置
+void drop(){
+    for(int i = 0; i < 4; i++){
+        lastBlock[i] = curBlock[i];
+        curBlock[i].y++;
+    }
+    
+    if(!check()){
+        //当curBlock到达底部或者与别的block接触时，固化处理
+        for(int i = 0; i < 4; i++){
+            table[lastBlock[i].y][lastBlock[i].x] = blockIndex;
+        }
+        //生成一个新方块
+        newBlock();
+    }
+}
+
 int main(void){
     srand(time(0)); //生成一个随机种子
     //create an interface
@@ -91,31 +174,64 @@ int main(void){
                         VideoMode(320, 480),    //window size
                         "Tetris-BT2023"
                         );
-    // 2. render background
+    // 2. render background & tiles
     Texture background;
     background.loadFromFile("/Users/brandon3tang/gameDev/Tetris/Tetris/images/background.png"); //把背景图片加载到内存
     Sprite spriteBg(background);    //根据图片创造sprite
     
-    //3. render tiles
+    Texture frame;
+    frame.loadFromFile("/Users/brandon3tang/gameDev/Tetris/Tetris/images/frame.png");
+    Sprite spriteFrame(frame);
+    
     Texture tiles;
     tiles.loadFromFile("/Users/brandon3tang/gameDev/Tetris/Tetris/images/tiles.png");
-    Sprite spriteTiles(tiles);
+    //把背景图片加载到内存
+    Sprite spriteTiles(tiles);    //根据图片创造sprite
     
-    window.draw(spriteBg);
-    window.display();
-    
-    //generate the fisrt block
+    //3. generate the fisrt block
     newBlock();
+    
+    // 计时器clock
+    Clock clock;    //sf::Clock,生成时就会启动
+    float overallTime = 0;
     
     //getting into the game loop
     while(window.isOpen()){// 如果窗口未被关闭
+        float time = clock.getElapsedTime().asSeconds(); //获取计时器从上一次重启/启动到现在所经过的时间
+        clock.restart();
+        overallTime += time;
         //waiting for players to press a key, and then dealing with it
-        keyEvent();
+        keyEvent(&window);
+//        sf::Event event;
+//        while (window.pollEvent(event))
+//        {
+//            // Close window: exit
+//            if (event.type == sf::Event::Closed) {
+//                window.close();
+//            }
+//
+//            // Escape pressed: exit
+//            if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape) {
+//                window.close();
+//            }
+//        }
+        
+        if(overallTime > delay){
+            //降落
+            drop(); //方块下降一个位置
+            overallTime = 0;    //总时间清零，等待累计到下一次下降的时间
+        }
+        
+        delay = SPEED_NORMAL; //初始化速度，以防在keyEvent中加速过。为什么在这里初始化？？
         
         //绘制游戏
-        
+        window.clear(Color::White);
+        window.draw(spriteBg);
+        window.draw(spriteFrame);
         //绘制方块
         drawBlock(&spriteTiles, &window);
+        
+        window.display();
     }
     
     cin.get();
