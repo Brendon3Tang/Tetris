@@ -9,6 +9,7 @@
 #include <SFML/Audio.hpp>
 #include <time.h>
 #include <iostream>
+#include <fstream>
 
 
 using namespace std;
@@ -25,6 +26,7 @@ int blocks[7][4] = {
     {2, 3, 4, 5}    //田
 };
 
+#define RECORD_FILE "/Users/brandon3tang/gameDev/Tetris/Tetris/record.txt"
 const int ROW_COUNT = 20;
 const int COL_COUNT = 10;
 //game zoon: table[i][j] = 0 means that the position (i,j) is empty, else is occupied by a block with the related index
@@ -42,13 +44,12 @@ const float SPEED_QUICK = 0.05;
 float delay = SPEED_NORMAL;  //实际选用的速度
 
 Sound sound;
-Text textScore, scoreTitle;
+Text textScore, scoreTitle, historyScoreTitle, historyScore;
 Font font;
+int highestScore;
 int score = 0;
-
-void checkOver(){
-    
-}
+bool pause = false;
+bool gameOver = false;
 
 bool check(){
     for(int i = 0; i < 4; i++){
@@ -114,6 +115,12 @@ void keyEvent(RenderWindow *window){
                 case Keyboard::Down:
                     delay = SPEED_QUICK;
                     break;
+                case Keyboard::Space:
+                    if(pause == true)
+                        pause = false;
+                    else
+                        pause = true;
+                    break;
                 default:
                     break;
           }
@@ -139,6 +146,16 @@ void newBlock(){
     for(int i = 0; i < 4; i++){
         curBlock[i].x = blocks[n][i] % 2;
         curBlock[i].y = blocks[n][i] / 2;
+    }
+    
+    if(!check()){   //如果生成新方块时就已经不能通过check，那么说明满了，游戏结束
+        pause = true;   //  先暂停游戏
+        gameOver = true;
+        //停止绘制当前方块
+        for(int i = 0; i < 4; i++){
+            curBlock[i].x = 0;
+            curBlock[i].y = 0;
+        }
     }
 }
 
@@ -175,7 +192,7 @@ void drop(){
         lastBlock[i] = curBlock[i];
         curBlock[i].y++;
     }
-    
+        
     if(!check()){
         //当curBlock到达底部或者与别的block接触时，固化处理
         for(int i = 0; i < 4; i++){
@@ -212,20 +229,54 @@ void clearLine(){
 
 void initialScore(){
     if(!font.loadFromFile("/Users/brandon3tang/gameDev/Tetris/Tetris/sansation.ttf"))   exit(1);
+    score = 0;
+    
+    ifstream file(RECORD_FILE);
+    if(!file.is_open()){
+        cout << RECORD_FILE << "打开失败" << endl;
+        highestScore = 0;
+    }
+    else
+        file >> highestScore;
+    file.close();
     
     textScore.setFont(font);
-    textScore.setCharacterSize(30);
-    textScore.setColor(Color::Blue);
+    textScore.setCharacterSize(20);
+    textScore.setColor(Color(0, 153, 153));
     textScore.setStyle(Text::Bold);
-    textScore.setPosition(155, 445);
+    textScore.setPosition(60, 435);
     textScore.setString("0");
     
     scoreTitle.setFont(font);
-    scoreTitle.setCharacterSize(30);
-    scoreTitle.setColor(Color:: Blue);
+    scoreTitle.setCharacterSize(20);
+    scoreTitle.setColor(Color(0, 153, 153));
     scoreTitle.setStyle(Text::Bold);
-    scoreTitle.setPosition(110, 405);
+    scoreTitle.setPosition(30, 415);
     scoreTitle.setString("SCORE");
+    
+    historyScore.setFont(font);
+    historyScore.setCharacterSize(20);
+    historyScore.setColor(Color(0, 153, 153));
+    historyScore.setStyle(Text::Bold);
+    historyScore.setPosition(200, 435);
+    historyScore.setString(to_string(highestScore));
+    
+    historyScoreTitle.setFont(font);
+    historyScoreTitle.setCharacterSize(20);
+    historyScoreTitle.setColor(Color(0, 153, 153));
+    historyScoreTitle.setStyle(Text::Bold);
+    historyScoreTitle.setPosition(120, 415);
+    historyScoreTitle.setString("HISTORY SCORE");
+}
+
+void saveScore(){
+    if(score > highestScore){
+        highestScore = score;
+        //输出最高分
+        ofstream file(RECORD_FILE);
+        file << highestScore;
+        file.close();
+    }
 }
 
 int main(void){
@@ -279,22 +330,38 @@ int main(void){
         
         if(timer > delay){
             //降落
-            drop(); //方块下降一个位置
+            if(pause == false)
+                drop(); //方块下降一个位置
             timer = 0;    //总时间清零，等待累计到下一次下降的时间
         }
         
         clearLine();
         
         delay = SPEED_NORMAL; //初始化速度，以防在keyEvent中加速过。为什么在这里初始化？？
-        
         //绘制游戏
         window.clear(Color::White);
         window.draw(spriteBg);
         window.draw(spriteFrame);
         window.draw(scoreTitle);
         window.draw(textScore);
+        window.draw(historyScore);
+        window.draw(historyScoreTitle);
         //绘制方块
         drawBlock(&spriteTiles, &window);
+        
+        if(gameOver){
+            //加载游戏结束页面：
+            Image image;
+            image.loadFromFile("/Users/brandon3tang/gameDev/Tetris/Tetris/images/gameover.png");
+            Texture overImage;
+            overImage.loadFromImage(image);
+            Sprite spriteOver(overImage);
+            spriteOver.setPosition(98, 186);
+            window.draw(spriteOver);
+            
+            //保存得分
+            saveScore();
+        }
         
         window.display();
     }

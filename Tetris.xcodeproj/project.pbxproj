@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		065181F929C9A13A00DF938C /* record.txt in Resources */ = {isa = PBXBuildFile; fileRef = 065181F829C9A13A00DF938C /* record.txt */; };
 		06924CBE29C8112E009F78EC /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 06924CBD29C8112E009F78EC /* main.cpp */; };
 		06924CC129C82B37009F78EC /* Tetris-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 06924CBF29C82B37009F78EC /* Tetris-Info.plist */; };
 		06924CC329C84296009F78EC /* audio in Resources */ = {isa = PBXBuildFile; fileRef = 06924CC229C84296009F78EC /* audio */; };
@@ -16,6 +17,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		065181F829C9A13A00DF938C /* record.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = record.txt; path = Tetris/record.txt; sourceTree = "<group>"; };
 		06924CBD29C8112E009F78EC /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = main.cpp; path = Tetris/main.cpp; sourceTree = "<group>"; };
 		06924CBF29C82B37009F78EC /* Tetris-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "Tetris-Info.plist"; path = "Tetris/Tetris-Info.plist"; sourceTree = "<group>"; };
 		06924CC029C82B37009F78EC /* MyPlayground.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; name = MyPlayground.playground; path = Tetris/MyPlayground.playground; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
@@ -41,6 +43,7 @@
 		06AC761729C45CF80044CC17 = {
 			isa = PBXGroup;
 			children = (
+				065181F829C9A13A00DF938C /* record.txt */,
 				06924CC229C84296009F78EC /* audio */,
 				06924CC029C82B37009F78EC /* MyPlayground.playground */,
 				06924CBF29C82B37009F78EC /* Tetris-Info.plist */,
@@ -131,6 +134,7 @@
 				06924CC129C82B37009F78EC /* Tetris-Info.plist in Resources */,
 				06924D2129C856E8009F78EC /* sansation.ttf in Resources */,
 				06AC763F29C464680044CC17 /* images in Resources */,
+				065181F929C9A13A00DF938C /* record.txt in Resources */,
 				06BB1B9329C5B02A00A93FCB /* DevelopLog in Resources */,
 				06924CC329C84296009F78EC /* audio in Resources */,
 			);
